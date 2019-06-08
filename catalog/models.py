@@ -4,6 +4,7 @@ import uuid
 
 
 class Genre(models.Model):
+    """ Model representation of a book genre. """
     name = models.CharField(
         max_length=200, help_text='Enter a book genre (e.g. Science Fiction)')
 
@@ -12,6 +13,7 @@ class Genre(models.Model):
 
 
 class Language(models.Model):
+    """ Model representation of a book language """
     name = models.CharField(max_length=200,
                             help_text="Enter the book's natural language (e.g. English, French, Japanese etc.)")
 
@@ -20,6 +22,7 @@ class Language(models.Model):
 
 
 class Book(models.Model):
+    """ Model representation of a book (but not a specific copy of a book). """
     title = models.CharField(max_length=200)
     author = models.ForeignKey(
         'Author',
@@ -45,6 +48,10 @@ class Book(models.Model):
 
 
 class BookInstance(models.Model):
+    """
+    Model representating a specific copy of a book
+    (i.e. that can be borrowed from the library)
+    """
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
