@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.views import generic
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import (
     Book,
     Author,
@@ -46,9 +47,10 @@ def index(request):
 class BookListView(generic.ListView):
     model = Book
     paginate_by = 10
-    context_object_name = 'my_book_list'  # your own name for the list as a template valiable
+    # your own name for the list as a template valiable
+    context_object_name = 'my_book_list'
     # queryset = Book.objects.filter(title__icontains='war')[:5] # Get 5 books containing the war
-    template_name = 'book_list.html' # Specify your own template name/location
+    template_name = 'book_list.html'  # Specify your own template name/location
 
 
 class BookDetailView(generic.DetailView):
@@ -66,3 +68,12 @@ class AuthorListView(generic.ListView):
 class AuthorDetailView(generic.DetailView):
     model = Author
     template_name = 'author_detail.html'
+
+
+class LoanedBooksByUserListView(LoginRequiredMixin, generic.ListView):
+    model = BookInstance
+    template_name = 'catalog/bookinstance_list_borrowed_user.html'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return BookInstance.objects.filter(borrower=self.request.user).filter(status__exact='o').order_by('due_back')
