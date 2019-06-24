@@ -23,6 +23,10 @@ def index(request):
     # The 'all()' is implied by default.
     num_authors = Author.objects.count()
 
+    # Number of visits to this view, as counted in session variable.
+    num_visits = request.session.get('num_visits', 0)
+    request.session['num_visits'] = num_visits + 1
+
     num_genres = Genre.objects.filter(
         name__contains='Sci'
     ).count()
@@ -33,6 +37,7 @@ def index(request):
         'num_instances_avaliable': num_instances_avaliable,
         'num_authors': num_authors,
         'num_genres': num_genres,
+        'num_visits': num_visits
     }
 
     return render(request, 'index.html', context=context)
